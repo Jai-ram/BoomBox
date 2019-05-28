@@ -1,6 +1,7 @@
 
 
 import 'package:boom_box/app.dart';
+import 'package:boom_box/bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:boom_box/play.dart';
 
@@ -30,6 +31,7 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage>  {
+  PlayerState playerState;
 
   MusicFinder player = new MusicFinder();
  
@@ -77,6 +79,9 @@ class _ListPageState extends State<ListPage>  {
           backgroundColor: Colors.blueAccent[200],
           elevation: 0.0,
           actions:<Widget>[
+                  IconButton(icon: Icon(Icons.search),onPressed: (){
+                    showSearch(context: context,delegate: DataSearch());
+                  },),
                   PopupMenuButton<String>(
                     onSelected: choiceAction,
                                                         itemBuilder: (BuildContext context){
@@ -91,6 +96,7 @@ class _ListPageState extends State<ListPage>  {
                                       
                                                     ],
                           ),
+                          
                           body: Container(
                             
                             child: ListView.builder(
@@ -101,21 +107,26 @@ class _ListPageState extends State<ListPage>  {
                                   child:Container(
                                     width: 50.0,
                                     height: 40.0,
-                                    color: Colors.deepPurple,
+                                    color: Color(0xFFeeeeee),
+                                   
+                                   // color: Colors.deepPurple,
                                     child: new InkWell(
                                       
                                       child: Text(
                                         songs[i].title,
-                                        style: TextStyle(fontWeight: FontWeight.w500,color: Colors.white),
+                                        style: TextStyle(fontWeight: FontWeight.w800,color: Colors.black),
                                         ),
                                       
                             
                                 onTap: (){
+                                  bool nowtap=true;
                                     Navigator.push(
                                                   context,
+                                                  
+                                                  
                                                   new MaterialPageRoute(
                                                   builder: (BuildContext context) 
-                                                    => new SecondPage(i)));
+                                                    => new SecondPage(i,nowtap)));
                                 },),
                                   ));
                               },
@@ -133,4 +144,73 @@ class _ListPageState extends State<ListPage>  {
                                                 builder: (BuildContext context) 
                                                   => new Infopage()));
 }
+}
+class DataSearch extends SearchDelegate<String>{
+  
+  final recentsongs=[songs[0].title,songs[1].title];
+  //final song=songs.title;
+  @override
+  List<Widget> buildActions(BuildContext context) {
+
+    return [IconButton(icon: Icon(Icons.cancel),onPressed: (){
+      query="";
+
+    })];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: AnimatedIcon(
+        icon:AnimatedIcons.menu_arrow,
+        progress: transitionAnimation,),
+      onPressed: (){
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+   
+    return null;
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final suggestion=query.isEmpty?recentsongs:songs.title.where((p)=>p.startsWith(query)).toList();
+    return ListView.builder(
+                              
+                              itemCount: suggestion.length,
+                              itemBuilder: (context,i){
+                                return Card(
+                                  child:Container(
+                                    width: 50.0,
+                                    height: 40.0,
+                                    color: Color(0xFFeeeeee),
+                                   
+                                   // color: Colors.deepPurple,
+                                    child: new InkWell(
+                                      
+                                      child: Text(
+                                        suggestion[i],
+                                        style: TextStyle(fontWeight: FontWeight.w800,color: Colors.black),
+                                        ),
+                                      
+                            
+                                onTap: (){
+                                  bool nowtap=true;
+                                    Navigator.push(
+                                                  context,
+                                                  
+                                                  
+                                                  new MaterialPageRoute(
+                                                  builder: (BuildContext context) 
+                                                    => new SecondPage(i,nowtap)));
+                                },),
+                                  ));
+                              }
+    );
+  }
+
 }

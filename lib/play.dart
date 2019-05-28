@@ -8,8 +8,10 @@ import 'package:boom_box/main.dart';
 
 
 
+
 import 'package:flutter/material.dart';
 import 'package:fluttery_audio/fluttery_audio.dart';
+int ix;
 
 
 
@@ -34,8 +36,9 @@ class MyApp extends StatelessWidget {
 
 class SecondPage extends StatefulWidget{
 
-  SecondPage(this.index);
+  SecondPage(this.index, this.nowtap);
   final index;
+  final nowtap;
   
   
  
@@ -46,107 +49,120 @@ class SecondPage extends StatefulWidget{
 }
 
 class _SecondPageState extends State<SecondPage> {
-
-
   
   
-  @override
-  Widget build(BuildContext context) {
+  
+  
     
-    return new Audio(
-      audioUrl: songs[widget.index].uri,
-     
-      
-          child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-          leading: new IconButton(
-            icon: new Icon(Icons.arrow_back_ios),
-            color: const Color(0xffdddddd),
-            onPressed: (){
-                            Navigator.of(context).pop(true);
-                              },
+    
+    @override
+    Widget build(BuildContext context) {
+      ix=widget.index;
+      return new Audio(
+        
+        audioUrl: songs[widget.index].uri,
+       
+        
+            child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+            leading: new IconButton(
+              icon: new Icon(Icons.arrow_back_ios),
+              color: const Color(0xffdddddd),
+              onPressed: (){
+                              Navigator.of(context).pop(true);
+                                },
+                              ),
+                              title: new Text(songs[ix].title,style: TextStyle(color: Colors.black),),
+                    
+                              actions: <Widget>[
+                                new IconButton(
+                                icon: new Icon(Icons.exit_to_app),
+                                color: const Color(0xffdddddd),
+                                
+                                onPressed: (){_showDialog();
+                                 
+                                },
+                              ),
+                              ],
                             ),
-                            title: new Text(songs[widget.index].title,style: TextStyle(color: Colors.black),),
-                  
-                            actions: <Widget>[
-                              new IconButton(
-                              icon: new Icon(Icons.exit_to_app),
-                              color: const Color(0xffdddddd),
-                              
-                              onPressed: (){_showDialog();
-                               
-                              },
-                            ),
-                            ],
-                          ),
-                          body: new Column(
-                            children: <Widget>[
-                              new Expanded(
-                                child: new Center(
-                                  child: new Container(
-                                    width: 140.0,
-                                    height: 140.0,
-                                    child:ClipOval(
-                                      clipper: new CircleClipper(),
-                                                    child: songs[widget.index].albumArt != null ? Image.file(File.fromUri(Uri.parse(songs[widget.index].albumArt)),
-                                                    fit: BoxFit.cover,
-                                                    ):Container(),
-                                    ),
-                                  )
-
-                                ),
-                                ),
+                            body: new Column(
                              
+                              children: <Widget>[
+                                new Expanded(
+                                  child: new Center(
+                                    child: new Container(
+                                      width: 160.0,
+                                      height: 160.0,
+                                      child:ClipOval(
+                                        clipper: new CircleClipper(),
+                                                      child: songs[ix].albumArt != null ? Image.file(File.fromUri(Uri.parse(songs[ix].albumArt)),
+                                                      fit: BoxFit.cover,
+                                                      ):
+                                                       new Image.asset(
+                  "assets/music.png",
+                  fit: BoxFit.cover,
+                  height: 250.0,
+                  gaplessPlayback: false,
+),
                                                       
-                              
-                                                                //visualizer
-                                                                new Container(
-                                                                  width: double.infinity,
-                                                                  height: 125.0,
-                                                                ),
-                                                                //song title,artist name and controls
-                                                                new BottomControls(song:songs[widget.index])
-                                                              ],
-                                                            )
-                                                            
-                                                          ),
-                      );
-                                                      }
-
-  void _showDialog() {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text("Are you sure?"),
-          content: new Text("Do you want to exit an app"),
-          actions: <Widget>[
-           
-            new FlatButton(
-              child: new Text("No"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            new FlatButton(
-              child: new Text("Yes"),
-              onPressed: () {
-                exit(0);
-              },
-            ),
-          ],
-        );
-      },
-    );
-}
-                                                      
-                  
+                                      ),
+                                    )
   
-}
+                                  ),
+                                  ),
+                               
+                                                        
+                                
+                                                                  //visualizer
+                                                                  new Container(
+                                                                    width: double.infinity,
+                                                                    height: 125.0,
+                                                                  ),
+                                                                  //song title,artist name and controls
+                                                                  new BottomControls(index:ix,nowtap:widget.nowtap)
+                                                                ],
+                                                              )
+                                                              
+                                                            ),
+                        );
+                                                        }
+  
+    void _showDialog() {
+      // flutter defined function
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: new Text("Are you sure?"),
+            content: new Text("Do you want to exit an app"),
+            actions: <Widget>[
+             
+              new FlatButton(
+                child: new Text("No"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new FlatButton(
+                child: new Text("Yes"),
+                onPressed: () {
+                  exit(0);
+                },
+              ),
+            ],
+          );
+        },
+      );
+  }
+                                                        
+                    
+    
+  }
+  
+ 
 class CircleClipper extends CustomClipper<Rect>{
   @override
   Rect getClip(Size size) => new Rect.fromCircle(
